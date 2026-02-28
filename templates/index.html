@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Traffic Congestion Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .container {
+            background: white;
+            width: 350px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>🚦 Traffic Congestion Prediction</h2>
+
+    <div class="container">
+
+        <input type="number" id="temp" placeholder="Temperature"><br>
+        <input type="number" id="rain" placeholder="Rain"><br>
+        <input type="number" id="snow" placeholder="Snow"><br>
+        <input type="number" id="clouds" placeholder="Clouds"><br>
+        <input type="number" id="hour" placeholder="Hour (0-23)"><br>
+        <input type="number" id="day" placeholder="Day"><br>
+        <input type="number" id="month" placeholder="Month"><br>
+
+        <button onclick="predictTraffic()">Predict</button>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+        function predictTraffic() {
+
+            const data = {
+                temp: document.getElementById("temp").value,
+                rain: document.getElementById("rain").value,
+                snow: document.getElementById("snow").value,
+                clouds: document.getElementById("clouds").value,
+                hour: document.getElementById("hour").value,
+                day: document.getElementById("day").value,
+                month: document.getElementById("month").value
+            };
+
+            fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.prediction) {
+                    document.getElementById("result").innerHTML =
+                        "Prediction: " + result.prediction;
+                } else {
+                    document.getElementById("result").innerHTML =
+                        "Error: " + result.error;
+                }
+            })
+            .catch(error => {
+                document.getElementById("result").innerHTML =
+                    "Something went wrong!";
+                console.error(error);
+            });
+        }
+    </script>
+
+</body>
+</html>
